@@ -4,19 +4,53 @@ using System.Collections;
 public class CameraFollower : MonoBehaviour {
 	//public GameObject toFollow;
 	public Transform target;
+	public Transform parent;
 
-	private Vector3 aimingAngle;
-
+	private Vector3 normalAngle;
+	private float timeSinceSwitch;
+	private int cameraMode;
+	private Rigidbody myRigid;
+	private Vector3 lastAngle;
+	//private float moveSpeed;
 	// Use this for initialization
 	void Start () {
-		//aimingAngle = Vector3.back  * 10 + Vector3.up * 3;
-		//toFollowTrans = toFollow.transform;
+		normalAngle = transform.localEulerAngles;
+		myRigid = this.GetComponent<Rigidbody> ();
+		lastAngle = transform.localEulerAngles;
 	}
 	
 	// Update is called once per frame
-	void Update () {
-		//transform.position = toFollowTrans.position;
-		transform.LookAt(target.position);
-		//transform.rotation = Quaternion.Euler(toFollowTrans.position - aimingAngle);
+	void FixedUpdate () {
+		myRigid.velocity = (10 * (parent.position - transform.position) );
+
+
+
+		timeSinceSwitch += Time.deltaTime;
+		if (Input.GetAxis("Target") > 0 && timeSinceSwitch > .4f) {
+			cameraMode = (cameraMode + 1) % 2;
+			timeSinceSwitch = 0;
+
+		}
+		Vector3 lookAngle = transform.eulerAngles;
+		switch (cameraMode) {
+		case 0:
+			//transform.localEulerAngles = normalAngle;
+			lookAngle = Vector3.RotateTowards (transform.forward, parent.forward, Time.deltaTime * timeSinceSwitch, 0);
+			if (lookAngle.magnitude < 1) {
+				//print (lookAngle.magnitude);
+			}
+			break;
+		case 1:
+			Vector3 targetDir = target.position - transform.position;
+			lookAngle = Vector3.RotateTowards (transform.forward, targetDir, Time.deltaTime * timeSinceSwitch, 0);
+
+			if ( timeSinceSwitch > 3 ) {
+				lookAngle = target.position - transform.position;
+			}
+
+			break;
+		}
+		transform.rotation = Quaternion.LookRotation (lookAngle);
+		lastAngle = lookAngle;
 	}
 }

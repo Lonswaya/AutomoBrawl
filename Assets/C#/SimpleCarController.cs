@@ -98,9 +98,14 @@ public class SimpleCarController : MonoBehaviour {
 		FixInverted();
 		ProcessWheels();
 
-
 	}
-
+	public void AirMovement() {
+		float forwardRotation = Input.GetAxis("Vertical");
+		float sideRotation = Input.GetAxis("Horizontal");
+		//print ("airborne");
+		myRigid.AddRelativeTorque (new Vector3 (forwardRotation * Time.deltaTime * 1000000, sideRotation * Time.deltaTime * 1000000, 0));
+		//print (myRigid.rotation);
+	}
 	public void FixInverted() {
 		float rotZ = transform.eulerAngles.z%360;
 		if (rotZ >= 90 && rotZ <= 270) {
@@ -211,15 +216,6 @@ public class SimpleCarController : MonoBehaviour {
 				timeGrounded = 0;
 				airborne = true;
 			}
-			/*if (groundedL) {
-				myRigid.AddForceAtPosition(axleInfo.leftWheel.transform.up * -antiRollForce, axleInfo.leftWheel.transform.position * 10); 
-				Debug.DrawLine(axleInfo.leftWheel.transform.up * -antiRollForce + axleInfo.leftWheel.transform.position, axleInfo.leftWheel.transform.position);
-			}
-			if (groundedR) {
-				myRigid.AddForceAtPosition(axleInfo.rightWheel.transform.up * antiRollForce, axleInfo.rightWheel.transform.position * 10);
-				Debug.DrawLine(axleInfo.rightWheel.transform.up * -antiRollForce + axleInfo.rightWheel.transform.position, axleInfo.rightWheel.transform.position);
-
-			}*/
 
 
 
@@ -229,7 +225,9 @@ public class SimpleCarController : MonoBehaviour {
 
 		}
 		if (airborne) {
-			myRigid.AddRelativeTorque(new Vector3(0, 0, steering * Time.deltaTime * 60));
+			//myRigid.AddRelativeTorque(new Vector3(0, 0, steering * Time.deltaTime * 60));
+
+			AirMovement ();
 		}
 	}
 }
