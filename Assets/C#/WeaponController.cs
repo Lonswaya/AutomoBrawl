@@ -4,15 +4,23 @@ using System.Collections;
 public class TurretInfo {
 	public Transform horizontalTurret;
 	public Transform verticalTurret;
+	public Transform firingBody;
 }
 public class WeaponController : MonoBehaviour {
 	public TurretInfo[] weapons;
 	public bool aiming = true;
 
-
+	private Rigidbody myRigid;
+	private Weapon[] weaponScripts;
 	// Use this for initialization
 	void Start () {
 		//Cursor.visible = false;
+		myRigid = transform.GetComponent<Rigidbody>();
+		weaponScripts = new SimpleWeapon[weapons.Length];
+		for (int i = 0; i < weapons.Length; i++) {
+			weaponScripts [i] = weapons [i].firingBody.GetComponent<SimpleWeapon> ();
+			weaponScripts [i].SetRigid (myRigid);
+		}
 	}
 	
 	// Update is called once per frame
@@ -27,6 +35,17 @@ public class WeaponController : MonoBehaviour {
 			}
 		}
 
-	}
+		for (int index = 0; index < weapons.Length; index++) {
+			//print(Input.GetAxis("Fire" + (index+1)));
+			if (Input.GetAxis ("Fire" + (index + 1)) > 0) {
+				weaponScripts [index].FireDown ();
+			} else {
+				weaponScripts [index].FireUp ();
+			}
+		}
 
+	}
+	public Rigidbody GetRigid() {
+		return myRigid;
+	}
 }

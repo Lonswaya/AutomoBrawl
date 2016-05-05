@@ -24,6 +24,9 @@ public class SimpleCarController : MonoBehaviour {
 	public float maxMotorTorque;
 	public float maxSteeringAngle;
 	public float timeToFixInverted = 2.5f;
+	public float timeToBoost;
+
+	private float timeSinceBoost;
 	private Rigidbody myRigid;
 	private float timeGrounded, timeUpsideDown;
 	private bool lastDrifting;
@@ -100,12 +103,12 @@ public class SimpleCarController : MonoBehaviour {
 
 	public void FixInverted() {
 		float rotZ = transform.eulerAngles.z%360;
-		if (rotZ > 140 && rotZ < 220) {
+		if (rotZ >= 90 && rotZ <= 270) {
 			timeUpsideDown += Time.deltaTime;
 			if (timeUpsideDown > timeToFixInverted) {
 				//print("lurch");
-				myRigid.AddForce(300 * Vector3.up * myRigid.mass);
-				myRigid.AddTorque(0,0,60 * myRigid.mass);
+				myRigid.AddForce(400 * Vector3.up * myRigid.mass);
+				myRigid.AddTorque(0,0,20 * myRigid.mass);
 				timeUpsideDown = 0;
 			}
 		} else {
@@ -117,10 +120,18 @@ public class SimpleCarController : MonoBehaviour {
 		float steering = maxSteeringAngle * Input.GetAxis("Horizontal");
 		float brakeForce = Input.GetAxis("Brakes");
 		float driftAxis = Input.GetAxis("Drift");
+		bool boosting = (Input.GetAxis ("Boost") > 0);
 		bool drifting = driftAxis > 0;
 		bool airborne = false;
 
 		myRigid.AddRelativeForce(Vector3.forward * motor * Time.deltaTime * 150);
+		timeSinceBoost += Time.deltaTime;
+		if (boosting && timeSinceBoost > timeToBoost) { 
+			myRigid.AddRelativeForce (Vector3.up * 500 * myRigid.mass);
+			myRigid.AddRelativeForce(Vector3.forward * 2000 * myRigid.mass);
+			timeSinceBoost = 0;
+
+		}
 
 		if (steering != 0) {
 			myRigid.AddRelativeTorque(new Vector3(0,steering * Time.deltaTime * 300, 0));
