@@ -23,6 +23,7 @@ public class SimpleWeapon : MonoBehaviour, Weapon {
 	public float firingSpeed = 1;     //How fast we want our items to fly
 	public float coolDown = .3f;      //Weapon cooldown in between shots
 	public bool automatic;			  //If it is automatically firing or not
+	public int damage = 10;
 
 
 	public GameObject itemToShoot;
@@ -77,10 +78,25 @@ public class SimpleWeapon : MonoBehaviour, Weapon {
 			WeaponValues wv = weapons [index%weapons.Length];
 			for (int i = 0; i < itemsPerHit; i++) {
 				//spawn gameobject where it is
-				GameObject g = (GameObject)GameObject.Instantiate (itemToShoot, wv.body.position, Quaternion.Euler (wv.shootDir.position - wv.body.position)); 
-				Rigidbody r = g.GetComponent<Rigidbody> ();
-				r.velocity = myRigid.velocity;
-				g.GetComponent<Rigidbody> ().AddForce ((wv.shootDir.position - wv.body.position) * firingSpeed * 6000);
+				GameObject g = (GameObject)GameObject.Instantiate (itemToShoot, wv.body.position, Quaternion.identity);
+				g.transform.LookAt(wv.shootDir.position);
+				//need to call shoot because we will look at first
+				RaycastBullet rb;
+				if (rb = g.GetComponent<RaycastBullet> ()) {
+					rb.damage = damage;
+					rb.SendMessage ("Shoot", (wv.shootDir.position - wv.body.position));
+				}
+				Explosive ex;
+				if (ex = g.GetComponent<Explosive> ()) {
+					ex.damage = damage;
+
+				}
+
+				Rigidbody r;
+				if (r = g.GetComponent<Rigidbody> ()) {
+					r.velocity = myRigid.velocity;
+					r.AddForce ((wv.shootDir.position - wv.body.position) * firingSpeed * 6000);
+				}
 				//play particle system (if exists)
 				if (wv.particles) {
 					wv.particles.Play ();

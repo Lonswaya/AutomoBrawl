@@ -4,7 +4,7 @@ using System.Collections;
 
 public class Destructable : MonoBehaviour
 {
-	public ParticleSystem explosion;
+	public GameObject explosion; //one gameobject holding many particle systems
 	private bool destroyed = false;
 	void Explode() {
 		if (!destroyed) {
@@ -16,7 +16,7 @@ public class Destructable : MonoBehaviour
 			this.BroadcastMessage ("Gib",o);
 			destroyed = true;
 			r.isKinematic = true;
-			explosion.Play ();
+			explosion.SetActive(true);
 		}
 	
 	}
