@@ -5,6 +5,8 @@ public class CameraFollower : MonoBehaviour {
 	//public GameObject toFollow;
 	public Transform target;
 	public Transform parent;
+	public Transform reticle;
+
 
 	private Vector3 normalAngle;
 	private float timeSinceSwitch;
@@ -35,10 +37,12 @@ public class CameraFollower : MonoBehaviour {
 		switch (cameraMode) {
 		case 0:
 			//transform.localEulerAngles = normalAngle;
-			lookAngle = Vector3.RotateTowards (transform.forward, parent.forward, Time.deltaTime * timeSinceSwitch, 0);
+			Vector3 reticleDir = reticle.position - transform.position;
+			lookAngle = Vector3.RotateTowards (transform.forward, reticleDir, Time.deltaTime * timeSinceSwitch, 0);
 			if (lookAngle.magnitude < 1) {
 				//print (lookAngle.magnitude);
 			}
+			lookAngle = new Vector3 (lookAngle.x, 0, lookAngle.z);
 			break;
 		case 1:
 			Vector3 targetDir = target.position - transform.position;
@@ -48,8 +52,12 @@ public class CameraFollower : MonoBehaviour {
 				lookAngle = target.position - transform.position;
 			}
 
+
 			break;
+		
 		}
+
+
 		transform.rotation = Quaternion.LookRotation (lookAngle);
 		lastAngle = lookAngle;
 	}

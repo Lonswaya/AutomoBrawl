@@ -25,11 +25,13 @@ public class SimpleCarController : MonoBehaviour {
 	public float maxSteeringAngle;
 	public float timeToFixInverted = 2.5f;
 	public float timeToBoost;
+	public ParticleSystem booster;
 
 	private float timeSinceBoost;
 	private Rigidbody myRigid;
 	private float timeGrounded, timeUpsideDown;
 	private bool lastDrifting;
+
 
 	public void Start() {
 		myRigid = transform.GetComponent<Rigidbody>();
@@ -108,12 +110,12 @@ public class SimpleCarController : MonoBehaviour {
 	}
 	public void FixInverted() {
 		float rotZ = transform.eulerAngles.z%360;
-		if (rotZ >= 90 && rotZ <= 270) {
+		if (rotZ >= 80 && rotZ <= 280) {
 			timeUpsideDown += Time.deltaTime;
 			if (timeUpsideDown > timeToFixInverted) {
 				//print("lurch");
 				myRigid.AddForce(400 * Vector3.up * myRigid.mass);
-				myRigid.AddTorque(0,0,20 * myRigid.mass);
+				myRigid.AddTorque(0,60 * myRigid.mass,0);
 				timeUpsideDown = 0;
 			}
 		} else {
@@ -135,7 +137,7 @@ public class SimpleCarController : MonoBehaviour {
 			myRigid.AddRelativeForce (Vector3.up * 500 * myRigid.mass);
 			myRigid.AddRelativeForce(Vector3.forward * 2000 * myRigid.mass);
 			timeSinceBoost = 0;
-
+			booster.Play ();
 		}
 
 		if (steering != 0) {
