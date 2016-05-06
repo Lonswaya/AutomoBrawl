@@ -31,7 +31,7 @@ public class SimpleCarController : MonoBehaviour {
 	private Rigidbody myRigid;
 	private float timeGrounded, timeUpsideDown;
 	private bool lastDrifting;
-
+	private bool dead;
 
 	public void Start() {
 		myRigid = transform.GetComponent<Rigidbody>();
@@ -97,8 +97,11 @@ public class SimpleCarController : MonoBehaviour {
 
 	public void FixedUpdate()
 	{
-		FixInverted();
-		ProcessWheels();
+		if (!dead) {
+			FixInverted ();
+			ProcessWheels ();
+		}
+
 
 	}
 	public void AirMovement() {
@@ -231,5 +234,8 @@ public class SimpleCarController : MonoBehaviour {
 
 			AirMovement ();
 		}
+	}
+	void Death() {
+		dead = true;
 	}
 }

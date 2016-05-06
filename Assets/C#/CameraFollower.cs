@@ -7,18 +7,13 @@ public class CameraFollower : MonoBehaviour {
 	public Transform parent;
 	public Transform reticle;
 
-
-	private Vector3 normalAngle;
 	private float timeSinceSwitch;
 	private int cameraMode;
 	private Rigidbody myRigid;
-	private Vector3 lastAngle;
 	//private float moveSpeed;
 	// Use this for initialization
 	void Start () {
-		normalAngle = transform.localEulerAngles;
 		myRigid = this.GetComponent<Rigidbody> ();
-		lastAngle = transform.localEulerAngles;
 	}
 	
 	// Update is called once per frame
@@ -59,6 +54,5 @@ public class CameraFollower : MonoBehaviour {
 
 
 		transform.rotation = Quaternion.LookRotation (lookAngle);
-		lastAngle = lookAngle;
 	}
 }
