@@ -78,7 +78,7 @@ public class SimpleWeapon : MonoBehaviour, Weapon {
 			WeaponValues wv = weapons [index%weapons.Length];
 			for (int i = 0; i < itemsPerHit; i++) {
 				//spawn gameobject where it is
-				GameObject g = (GameObject)GameObject.Instantiate (itemToShoot, wv.body.position, Quaternion.identity);
+				GameObject g = (GameObject)GameObject.Instantiate (itemToShoot, wv.shootDir.position, Quaternion.identity);
 				g.transform.LookAt(wv.shootDir.position);
 				//need to call shoot because we will look at first
 				RaycastBullet rb;

@@ -2,8 +2,7 @@
 using System.Collections;
 [System.Serializable]
 public class TurretInfo {
-	public Transform horizontalTurret;
-	public Transform verticalTurret;
+	
 	public Transform firingBody;
 }
 public class WeaponController : MonoBehaviour {
